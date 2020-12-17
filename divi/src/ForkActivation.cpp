@@ -29,7 +29,7 @@ const std::unordered_map<Fork, int64_t,std::hash<int>> ACTIVATION_TIMES = {
   {Fork::UniformLotteryWinners, unixTimestampForDec31stMidnight},
   /* FIXME: Set real activation time for segwit light.  It is after
      staking vaults.  */
-  {Fork::SegwitLight, 2000000000},
+  {Fork::SegwitLight, 1500000000},
 };
 
 } // anonymous namespace

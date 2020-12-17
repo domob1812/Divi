@@ -35,7 +35,7 @@ class VaultForkTest (BitcoinTestFramework):
         outputs = data["vout"]
         for n in range (len (outputs)):
             if outputs[n]["scriptPubKey"]["type"] == "vault":
-                return {"txid": data["txid"], "vout": n}
+                return {"txid": data["baretxid"], "vout": n}
 
         raise AssertionError ("constructed transaction has no vault output")
 

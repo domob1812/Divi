@@ -36,7 +36,8 @@ class MultiSigTest (BitcoinTestFramework):
         return sharedMultisig
 
     def createSpendingTransaction(self,multisigTXID,sender1):
-        outputs = sender1.getrawtransaction(multisigTXID, 1)["vout"]
+        txdata = sender1.getrawtransaction(multisigTXID, 1)
+        outputs = txdata["vout"]
         outputIndex = -1
         for output in outputs:
             if output["value"]==Decimal(5000.0):
@@ -50,7 +51,7 @@ class MultiSigTest (BitcoinTestFramework):
         amountToSend = int ((Decimal (4999.9)) * COIN)
         tx = CTransaction ()
         tx.vout.append( CTxOut(amountToSend, scriptToSendTo )  )
-        tx.vin.append (CTxIn (COutPoint (txid=multisigTXID, n=outputIndex)))
+        tx.vin.append (CTxIn (COutPoint (txid=txdata["baretxid"], n=outputIndex)))
 
         return tx.serialize ().hex (), amountToSend
 

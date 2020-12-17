@@ -128,7 +128,7 @@ class MnVaultsTest (BitcoinTestFramework):
     amount = 100
     txid = self.nodes[0].sendtoaddress (addr, amount)
     raw = self.nodes[0].getrawtransaction (txid, 1)
-    outputId = raw["txid"]
+    outputId = raw["baretxid"]
     vout = None
     for i in range (len (raw["vout"])):
       o = raw["vout"][i]

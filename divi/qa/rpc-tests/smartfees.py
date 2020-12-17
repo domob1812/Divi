@@ -20,7 +20,7 @@ def find_output(node, txid, amount):
     txdata = node.getrawtransaction(txid, 1)
     for i in range(len(txdata["vout"])):
         if txdata["vout"][i]["value"] == amount:
-            return {"txid": txdata["txid"], "vout": i}
+            return {"txid": txdata["baretxid"], "vout": i}
     raise RuntimeError("find_output txid %s : %s not found"%(txid,str(amount)))
 
 def send_zeropri_transaction(from_node, to_node, amount, fee):

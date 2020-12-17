@@ -65,7 +65,7 @@ class OpMetaTest (BitcoinTestFramework):
         assert_equal (signed["complete"], True)
         data = self.node.decoderawtransaction (signed["hex"])
         self.node.sendrawtransaction (signed["hex"])
-        inp["txid"] = data["txid"]
+        inp["txid"] = data["baretxid"]
         inp["vout"] = 0
         inp["amount"] = change
 

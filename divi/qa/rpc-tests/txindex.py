@@ -63,11 +63,11 @@ class TxIndexTest (BitcoinTestFramework):
         sync_blocks (self.nodes)
         for n in self.nodes:
           assert_equal (n.getrawmempool (), [])
-          assert n.gettxout (txid, 0) is not None
-          self.expect_found (n, "txid", txid)
+          assert n.gettxout (bareTxid, 0) is not None
+          self.expect_found (n, "baretxid", bareTxid)
 
         print ("Spending test output...")
-        tx = self.nodes[0].createrawtransaction ([{"txid": txid, "vout": 0}], {addr: value - 2})
+        tx = self.nodes[0].createrawtransaction ([{"txid": bareTxid, "vout": 0}], {addr: value - 2})
         signed = self.nodes[0].signrawtransaction (tx)
         assert_equal (signed["complete"], True)
         self.nodes[0].sendrawtransaction (signed["hex"])
