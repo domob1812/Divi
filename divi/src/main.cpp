@@ -103,7 +103,7 @@ CConditionVariable cvBlockChange;
 int nScriptCheckThreads = 0;
 bool fImporting = false;
 bool fReindex = false;
-bool fTxIndex = true;
+extern const bool fTxIndex = true;
 bool fAddressIndex = false;
 bool fSpentIndex = false;
 bool fCheckBlockIndex = false;
@@ -2671,7 +2671,7 @@ bool static LoadBlockIndexDB(string& strError)
     fReindex |= fReindexing;
 
     // Check whether we have a transaction index
-    pblocktree->ReadFlag("txindex", fTxIndex);
+    //pblocktree->ReadFlag("txindex", fTxIndex);
     LogPrintf("LoadBlockIndexDB(): transaction index %s\n", fTxIndex ? "enabled" : "disabled");
 
     // Check whether we have an address index
@@ -2727,7 +2727,7 @@ bool InitBlockIndex()
         return true;
 
     // Use the provided setting for -txindex in the new database
-    fTxIndex = settings.GetBoolArg("-txindex", true);
+    //fTxIndex = settings.GetBoolArg("-txindex", true);
     pblocktree->WriteFlag("txindex", fTxIndex);
 
     // Use the provided setting for -addressindex in the new database

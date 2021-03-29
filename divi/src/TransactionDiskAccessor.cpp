@@ -13,7 +13,7 @@
 extern CCriticalSection cs_main;
 extern CTxMemPool mempool;
 extern CBlockTreeDB* pblocktree;
-extern bool fTxIndex;
+extern const bool fTxIndex;
 extern CCoinsViewCache* pcoinsTip;
 extern CChain chainActive;
 

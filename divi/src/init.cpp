@@ -89,7 +89,7 @@ extern bool fImporting;
 extern bool fCheckBlockIndex;
 extern int nScriptCheckThreads;
 extern int nCoinCacheSize;
-extern bool fTxIndex;
+extern const bool fTxIndex;
 extern bool fVerifyingBlocks;
 extern bool fLiteMode;
 extern BlockMap mapBlockIndex;
