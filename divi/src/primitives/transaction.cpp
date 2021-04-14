@@ -160,7 +160,7 @@ bool CTransaction::IsNull() const {
     return vin.empty() && vout.empty();
 }
 
-const uint256& CTransaction::GetHash() const {
+const uint256& CTransaction::GetHash2() const {
     return hash;
 }
 
@@ -185,14 +185,14 @@ bool operator!=(const CTransaction& a, const CTransaction& b)
     return a.hash != b.hash;
 }
 
-uint256 CMutableTransaction::GetBareTxid() const
+uint256 CMutableTransaction::GetBareTxid2() const
 {
-    return CTransaction(*this).GetBareTxid();
+    return CTransaction(*this).GetBareTxid2();
 }
 
 bool operator==(const CMutableTransaction& a, const CMutableTransaction& b)
 {
-    return a.GetHash() == b.GetHash();
+    return a.GetHash2() == b.GetHash2();
 }
 
 bool operator!=(const CMutableTransaction& a, const CMutableTransaction& b)
@@ -203,7 +203,7 @@ bool operator!=(const CMutableTransaction& a, const CMutableTransaction& b)
 CMutableTransaction::CMutableTransaction() : nVersion(CTransaction::CURRENT_VERSION), nLockTime(0) {}
 CMutableTransaction::CMutableTransaction(const CTransaction& tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime) {}
 
-uint256 CMutableTransaction::GetHash() const
+uint256 CMutableTransaction::GetHash2() const
 {
     return SerializeHash(*this);
 }
@@ -244,7 +244,7 @@ void CTransaction::UpdateHash() const
     *const_cast<uint256*>(&hash) = SerializeHash(*this);
 }
 
-uint256 CTransaction::GetBareTxid () const
+uint256 CTransaction::GetBareTxid2 () const
 {
     if (IsCoinBase())
     {
@@ -257,13 +257,13 @@ uint256 CTransaction::GetBareTxid () const
            coinbases are created after the fork activation (since the network
            is on PoS for a long time).  We still need this here to make sure
            all works fine in tests and is just correct in general.  */
-        return GetHash();
+        return GetHash2();
     }
 
     CMutableTransaction withoutSigs(*this);
     for (auto& in : withoutSigs.vin)
         in.scriptSig.clear();
-    return withoutSigs.GetHash();
+    return withoutSigs.GetHash2();
 }
 
 CTransaction::CTransaction() : hash(), nVersion(CTransaction::CURRENT_VERSION), vin(), vout(), nLockTime(0) { }

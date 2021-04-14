@@ -151,8 +151,8 @@ public:
     }
 
     bool IsNull() const;
-    const uint256& GetHash() const;
-    uint256 GetBareTxid () const;
+    const uint256& GetHash2() const;
+    uint256 GetBareTxid2 () const;
     CAmount GetValueOut() const;
     bool IsCoinBase() const;
 
@@ -189,8 +189,8 @@ struct CMutableTransaction
         READWRITE(nLockTime);
     }
 
-    uint256 GetHash() const;
-    uint256 GetBareTxid() const;
+    uint256 GetHash2() const;
+    uint256 GetBareTxid2() const;
     std::string ToString() const;
     friend bool operator==(const CMutableTransaction& a, const CMutableTransaction& b);
     friend bool operator!=(const CMutableTransaction& a, const CMutableTransaction& b);
