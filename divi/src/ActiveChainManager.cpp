@@ -99,7 +99,7 @@ bool ActiveChainManager::DisconnectBlock(
         }
         if(!pfClean)
         {
-            TransactionLocationReference txLocationReference(tx.GetHash(),pindex->nHeight,transactionIndex);
+            TransactionLocationReference txLocationReference(tx.GetHash2(),pindex->nHeight,transactionIndex);
             IndexDatabaseUpdateCollector::ReverseTransaction(tx,txLocationReference,view,indexDBUpdates);
         }
     }

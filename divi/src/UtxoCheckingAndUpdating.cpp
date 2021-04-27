@@ -26,7 +26,7 @@ void UpdateCoinsWithTransaction(const CTransaction& tx, CCoinsViewCache& inputs,
     }
 
     // add outputs
-    inputs.ModifyCoins(tx.GetHash())->FromTx(tx, nHeight);
+    inputs.ModifyCoins(tx.GetHash2())->FromTx(tx, nHeight);
 }
 
 static bool RemoveTxOutputsFromCache(
@@ -40,7 +40,7 @@ static bool RemoveTxOutputsFromCache(
     // have outputs available even in the block itself, so we handle that case
     // specially with outsEmpty.
     CCoins outsEmpty;
-    CCoinsModifier outs = view.ModifyCoins(tx.GetHash());
+    CCoinsModifier outs = view.ModifyCoins(tx.GetHash2());
     outs->ClearUnspendable();
 
     CCoins outsBlock(tx, blockHeight);

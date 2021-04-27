@@ -334,7 +334,7 @@ CAmount CWallet::ComputeCredit(const CWalletTx& tx, const isminefilter& filter, 
 {
     const CAmount maxMoneyAllowedInOutput = Params().MaxMoneyOut();
     CAmount nCredit = 0;
-    uint256 hash = tx.GetHash();
+    uint256 hash = tx.GetHash2();
     for (unsigned int i = 0; i < tx.vout.size(); i++) {
         if( (creditFilterFlags & REQUIRE_UNSPENT) && IsSpent(tx,i)) continue;
         if( (creditFilterFlags & REQUIRE_UNLOCKED) && IsLockedCoin(hash,i)) continue;
@@ -928,7 +928,7 @@ set<uint256> CWallet::GetConflicts(const uint256& txid) const
  */
 bool CWallet::IsSpent(const CWalletTx& wtx, unsigned int n) const
 {
-    return outputTracker_->IsSpent(wtx.GetHash(), n);
+    return outputTracker_->IsSpent(wtx.GetHash2(), n);
 }
 
 bool CWallet::EncryptWallet(const SecureString& strWalletPassphrase)
@@ -1645,7 +1645,7 @@ bool CWallet::IsAvailableForSpending(
         }
     }
 
-    const uint256 hash = pcoin->GetHash();
+    const uint256 hash = pcoin->GetHash2();
 
     if (IsSpent(*pcoin, i))
         return false;
@@ -1797,7 +1797,7 @@ bool CWallet::SelectStakeCoins(std::set<StakableCoin>& setCoins) const
             continue;
 
         //add to our stake set
-        setCoins.emplace(*out.tx, COutPoint(out.tx->GetHash(), out.i), out.tx->hashBlock);
+        setCoins.emplace(*out.tx, COutPoint(out.tx->GetHash2(), out.i), out.tx->hashBlock);
         nAmountSelected += out.tx->vout[out.i].nValue;
     }
     return true;
@@ -2151,7 +2151,7 @@ static CAmount AttachInputs(
     CAmount nValueIn = 0;
     for(const COutput& coin: setCoins)
     {
-        txWithoutChange.vin.emplace_back(coin.tx->GetHash(), coin.i);
+        txWithoutChange.vin.emplace_back(coin.tx->GetHash2(), coin.i);
         nValueIn += coin.Value();
     }
     return nValueIn;

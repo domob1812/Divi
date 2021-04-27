@@ -32,7 +32,7 @@ void TransactionLocationRecorder::RecordTxLocationData(
         txLocationData.reserve(numberOfTransactions_);
         txLocationDataSizeHasBeenPreallocated_ = true;
     }
-    txLocationData.emplace_back(tx.GetHash(), tx.GetBareTxid(), nextBlockTxOnDiskLocation_);
+    txLocationData.emplace_back(tx.GetHash2(), tx.GetBareTxid2(), nextBlockTxOnDiskLocation_);
     nextBlockTxOnDiskLocation_.nTxOffset += ::GetSerializeSize(tx, SER_DISK, CLIENT_VERSION);
 }
 
@@ -59,7 +59,7 @@ bool BlockTransactionChecker::Check(const CBlockRewards& nExpectedMint,bool fJus
     pindex_->nMint = 0;
     for (unsigned int i = 0; i < block_.vtx.size(); i++) {
         const CTransaction& tx = block_.vtx[i];
-        const TransactionLocationReference txLocationRef(tx.GetHash(),pindex_->nHeight,i);
+        const TransactionLocationReference txLocationRef(tx.GetHash2(),pindex_->nHeight,i);
 
         if(!txInputChecker_.TotalSigOpsAreBelowMaximum(tx))
         {

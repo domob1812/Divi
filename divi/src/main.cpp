@@ -954,7 +954,7 @@ bool CheckEnforcedPoSBlocksAndBIP30(const CChainParams& chainParameters, const C
 
     // Enforce BIP30.
     for (const auto& tx : block.vtx) {
-        const CCoins* coins = view.AccessCoins(tx.GetHash());
+        const CCoins* coins = view.AccessCoins(tx.GetHash2());
         if (coins && !coins->IsPruned())
             return state.DoS(100, error("%s : tried to overwrite transaction",__func__),
                              REJECT_INVALID, "bad-txns-BIP30");

@@ -69,7 +69,7 @@ void WalletDustCombiner::CombineDust(CAmount combineThreshold)
             if (out.Value() > combineThreshold * COIN)
                 continue;
 
-            COutPoint outpt(out.tx->GetHash(), out.i);
+            COutPoint outpt(out.tx->GetHash2(), out.i);
             coinControl->Select(outpt);
             coinsToCombine.push_back(out);
             nTotalRewardsValue += out.Value();

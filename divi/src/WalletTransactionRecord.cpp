@@ -63,9 +63,9 @@ std::pair<std::map<uint256, CWalletTx>::iterator, bool> WalletTransactionRecord:
 {
     AssertLockHeld(cs_walletTxRecord);
 
-    auto res = mapWallet.emplace(newlyAddedTransaction.GetHash(), newlyAddedTransaction);
+    auto res = mapWallet.emplace(newlyAddedTransaction.GetHash2(), newlyAddedTransaction);
     if (res.second)
-      mapBareTxid.emplace(newlyAddedTransaction.GetBareTxid(), &res.first->second);
+      mapBareTxid.emplace(newlyAddedTransaction.GetBareTxid2(), &res.first->second);
 
     return res;
 };

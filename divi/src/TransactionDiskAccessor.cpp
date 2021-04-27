@@ -44,7 +44,7 @@ bool GetTransaction(const uint256& hash, CTransaction& txOut, uint256& hashBlock
                     return error("%s : Deserialize or I/O error - %s", __func__, e.what());
                 }
                 hashBlock = header.GetHash();
-                if (txOut.GetHash() != hash && txOut.GetBareTxid() != hash)
+                if (txOut.GetHash2() != hash && txOut.GetBareTxid2() != hash)
                     return error("%s : txid mismatch", __func__);
                 return true;
             }
@@ -71,7 +71,7 @@ bool GetTransaction(const uint256& hash, CTransaction& txOut, uint256& hashBlock
         CBlock block;
         if (ReadBlockFromDisk(block, pindexSlow)) {
             BOOST_FOREACH (const CTransaction& tx, block.vtx) {
-                if (tx.GetHash() == hash || tx.GetBareTxid() == hash) {
+                if (tx.GetHash2() == hash || tx.GetBareTxid2() == hash) {
                     txOut = tx;
                     hashBlock = pindexSlow->GetBlockHash();
                     return true;
