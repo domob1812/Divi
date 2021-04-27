@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(willNotAllowSpendingLockedCoin)
 
     unsigned outputIndex=0;
     const CWalletTx& wtx = wallet.AddDefaultTx(defaultScript,outputIndex);
-    wallet.LockCoin(COutPoint(wtx.GetHash(),outputIndex));
+    wallet.LockCoin(COutPoint(wtx.GetHash2(),outputIndex));
 
     bool fIsSpendable = false;
     BOOST_CHECK(!wallet.IsAvailableForSpending(&wtx,outputIndex,false,fIsSpendable));
@@ -124,8 +124,8 @@ BOOST_AUTO_TEST_CASE(willAllowSpendingLockedCoinAfterUnlock)
     unsigned outputIndex=0;
     const CWalletTx& wtx = wallet.AddDefaultTx(defaultScript,outputIndex);
 
-    wallet.LockCoin(COutPoint(wtx.GetHash(),outputIndex));
-    wallet.UnlockCoin(COutPoint(wtx.GetHash(),outputIndex));
+    wallet.LockCoin(COutPoint(wtx.GetHash2(),outputIndex));
+    wallet.UnlockCoin(COutPoint(wtx.GetHash2(),outputIndex));
 
     bool fIsSpendable = false;
     BOOST_CHECK(wallet.IsAvailableForSpending(&wtx,outputIndex,false,fIsSpendable));
@@ -373,7 +373,7 @@ BOOST_AUTO_TEST_CASE(willEnsureLockedCoinsDoNotCountTowardStakableBalance)
     wallet.FakeAddToChain(firstNormalTx);
     wallet.FakeAddToChain(secondNormalTx);
 
-    wallet.LockCoin(COutPoint(firstNormalTx.GetHash(),firstTxOutputIndex));
+    wallet.LockCoin(COutPoint(firstNormalTx.GetHash2(),firstTxOutputIndex));
 
     BOOST_CHECK_EQUAL_MESSAGE(wallet.GetBalance(), firstNormalTxValue+secondNormalTxValue,"Total balance was not the expected amount");
     BOOST_CHECK_EQUAL_MESSAGE(wallet.GetStakingBalance(), secondNormalTxValue,"Staking balance was not the expected amount");
@@ -395,8 +395,8 @@ BOOST_AUTO_TEST_CASE(willEnsureStakingBalanceAndTotalBalanceAgreeEvenIfTxsBelong
     wallet.FakeAddToChain(secondNormalTx);
 
     std::set<StakableCoin> stakableCoins;
-    stakableCoins.insert(StakableCoin(firstNormalTx,COutPoint(firstNormalTx.GetHash(),firstTxOutputIndex),firstNormalTx.hashBlock));
-    stakableCoins.insert(StakableCoin(secondNormalTx,COutPoint(secondNormalTx.GetHash(),secondTxOutputIndex),secondNormalTx.hashBlock));
+    stakableCoins.insert(StakableCoin(firstNormalTx,COutPoint(firstNormalTx.GetHash2(),firstTxOutputIndex),firstNormalTx.hashBlock));
+    stakableCoins.insert(StakableCoin(secondNormalTx,COutPoint(secondNormalTx.GetHash2(),secondTxOutputIndex),secondNormalTx.hashBlock));
     BOOST_CHECK_EQUAL_MESSAGE(stakableCoins.size(),2,"Missing coins in the stakable set");
 }
 

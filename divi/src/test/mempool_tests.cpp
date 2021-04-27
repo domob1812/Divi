@@ -48,14 +48,14 @@ public:
     CMutableTransaction mtx;
     mtx.vout.emplace_back(COIN, CScript () << OP_TRUE);
     mtx.vout.emplace_back(COIN, CScript () << OP_TRUE);
-    coins.ModifyCoins(mtx.GetHash())->FromTx(mtx, 0);
+    coins.ModifyCoins(mtx.GetHash2())->FromTx(mtx, 0);
 
     txParent.vin.resize(2);
-    txParent.vin[0].prevout = COutPoint(mtx.GetHash(), 0);
+    txParent.vin[0].prevout = COutPoint(mtx.GetHash2(), 0);
     txParent.vin[0].scriptSig = CScript() << OP_11;
     /* Add a second input to make sure the transaction does not qualify as
        coinbase and thus has a bare txid unequal to its normal hash.  */
-    txParent.vin[1].prevout = COutPoint(mtx.GetHash(), 1);
+    txParent.vin[1].prevout = COutPoint(mtx.GetHash2(), 1);
     txParent.vin[1].scriptSig = CScript() << OP_12;
     txParent.vout.resize(3);
     for (int i = 0; i < 3; i++)
@@ -63,13 +63,13 @@ public:
         txParent.vout[i].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
         txParent.vout[i].nValue = 33000LL;
     }
-    assert(txParent.GetHash() != txParent.GetBareTxid());
+    assert(txParent.GetHash2() != txParent.GetBareTxid2());
 
     for (int i = 0; i < 3; i++)
     {
         txChild[i].vin.resize(1);
         txChild[i].vin[0].scriptSig = CScript() << OP_11;
-        txChild[i].vin[0].prevout.hash = txParent.GetHash();
+        txChild[i].vin[0].prevout.hash = txParent.GetHash2();
         txChild[i].vin[0].prevout.n = i;
         txChild[i].vout.resize(1);
         txChild[i].vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
@@ -80,7 +80,7 @@ public:
     {
         txGrandChild[i].vin.resize(1);
         txGrandChild[i].vin[0].scriptSig = CScript() << OP_11;
-        txGrandChild[i].vin[0].prevout.hash = txChild[i].GetHash();
+        txGrandChild[i].vin[0].prevout.hash = txChild[i].GetHash2();
         txGrandChild[i].vin[0].prevout.n = 0;
         txGrandChild[i].vout.resize(1);
         txGrandChild[i].vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
@@ -103,17 +103,17 @@ BOOST_AUTO_TEST_CASE(MempoolRemoveTest)
     BOOST_CHECK_EQUAL(removed.size(), 0);
 
     // Just the parent:
-    testPool.addUnchecked(txParent.GetHash(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
+    testPool.addUnchecked(txParent.GetHash2(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
     testPool.remove(txParent, removed, true);
     BOOST_CHECK_EQUAL(removed.size(), 1);
     removed.clear();
     
     // Parent, children, grandchildren:
-    testPool.addUnchecked(txParent.GetHash(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
+    testPool.addUnchecked(txParent.GetHash2(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
     for (int i = 0; i < 3; i++)
     {
-        testPool.addUnchecked(txChild[i].GetHash(), CTxMemPoolEntry(txChild[i], 0, 0, 0.0, 1), coins);
-        testPool.addUnchecked(txGrandChild[i].GetHash(), CTxMemPoolEntry(txGrandChild[i], 0, 0, 0.0, 1), coins);
+        testPool.addUnchecked(txChild[i].GetHash2(), CTxMemPoolEntry(txChild[i], 0, 0, 0.0, 1), coins);
+        testPool.addUnchecked(txGrandChild[i].GetHash2(), CTxMemPoolEntry(txGrandChild[i], 0, 0, 0.0, 1), coins);
     }
     // Remove Child[0], GrandChild[0] should be removed:
     testPool.remove(txChild[0], removed, true);
@@ -133,8 +133,8 @@ BOOST_AUTO_TEST_CASE(MempoolRemoveTest)
     // Add children and grandchildren, but NOT the parent (simulate the parent being in a block)
     for (int i = 0; i < 3; i++)
     {
-        testPool.addUnchecked(txChild[i].GetHash(), CTxMemPoolEntry(txChild[i], 0, 0, 0.0, 1), coins);
-        testPool.addUnchecked(txGrandChild[i].GetHash(), CTxMemPoolEntry(txGrandChild[i], 0, 0, 0.0, 1), coins);
+        testPool.addUnchecked(txChild[i].GetHash2(), CTxMemPoolEntry(txChild[i], 0, 0, 0.0, 1), coins);
+        testPool.addUnchecked(txGrandChild[i].GetHash2(), CTxMemPoolEntry(txGrandChild[i], 0, 0, 0.0, 1), coins);
     }
     // Now remove the parent, as might happen if a block-re-org occurs but the parent cannot be
     // put into the mempool (maybe because it is non-standard):
@@ -149,36 +149,36 @@ BOOST_AUTO_TEST_CASE(MempoolIndexByBareTxid)
     CTransaction tx;
     std::list<CTransaction> removed;
 
-    testPool.addUnchecked(txParent.GetHash(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
+    testPool.addUnchecked(txParent.GetHash2(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
     for (int i = 0; i < 3; ++i)
     {
-        testPool.addUnchecked(txChild[i].GetHash(), CTxMemPoolEntry(txChild[i], 0, 0, 0.0, 1), coins);
-        testPool.addUnchecked(txGrandChild[i].GetHash(), CTxMemPoolEntry(txGrandChild[i], 0, 0, 0.0, 1), coins);
+        testPool.addUnchecked(txChild[i].GetHash2(), CTxMemPoolEntry(txChild[i], 0, 0, 0.0, 1), coins);
+        testPool.addUnchecked(txGrandChild[i].GetHash2(), CTxMemPoolEntry(txGrandChild[i], 0, 0, 0.0, 1), coins);
     }
 
-    BOOST_CHECK(testPool.lookupBareTxid(txParent.GetBareTxid(), tx));
-    BOOST_CHECK(tx.GetHash() == txParent.GetHash());
-    BOOST_CHECK(!testPool.lookupBareTxid(txParent.GetHash(), tx));
+    BOOST_CHECK(testPool.lookupBareTxid(txParent.GetBareTxid2(), tx));
+    BOOST_CHECK(tx.GetHash2() == txParent.GetHash2());
+    BOOST_CHECK(!testPool.lookupBareTxid(txParent.GetHash2(), tx));
 
     testPool.remove(txParent, removed, true);
-    BOOST_CHECK(!testPool.lookupBareTxid(txParent.GetBareTxid(), tx));
-    BOOST_CHECK(!testPool.lookupBareTxid(txChild[0].GetBareTxid(), tx));
-    BOOST_CHECK(!testPool.lookupBareTxid(txGrandChild[0].GetBareTxid(), tx));
+    BOOST_CHECK(!testPool.lookupBareTxid(txParent.GetBareTxid2(), tx));
+    BOOST_CHECK(!testPool.lookupBareTxid(txChild[0].GetBareTxid2(), tx));
+    BOOST_CHECK(!testPool.lookupBareTxid(txGrandChild[0].GetBareTxid2(), tx));
 }
 
 BOOST_AUTO_TEST_CASE(MempoolSpentIndex)
 {
     spentIndex = true;
 
-    testPool.addUnchecked(txParent.GetHash(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
-    testPool.addUnchecked(txChild[0].GetHash(), CTxMemPoolEntry(txChild[0], 0, 0, 0.0, 1), coins);
+    testPool.addUnchecked(txParent.GetHash2(), CTxMemPoolEntry(txParent, 0, 0, 0.0, 1), coins);
+    testPool.addUnchecked(txChild[0].GetHash2(), CTxMemPoolEntry(txChild[0], 0, 0, 0.0, 1), coins);
 
-    const CSpentIndexKey keyParent(txParent.GetHash(), 0);
-    const CSpentIndexKey keyChild(txChild[0].GetHash(), 0);
+    const CSpentIndexKey keyParent(txParent.GetHash2(), 0);
+    const CSpentIndexKey keyChild(txChild[0].GetHash2(), 0);
 
     CSpentIndexValue value;
     BOOST_CHECK(testPool.getSpentIndex(keyParent, value));
-    BOOST_CHECK(value.txid == txChild[0].GetHash());
+    BOOST_CHECK(value.txid == txChild[0].GetHash2());
     BOOST_CHECK_EQUAL(value.inputIndex, 0);
     BOOST_CHECK(!testPool.getSpentIndex(keyChild, value));
 

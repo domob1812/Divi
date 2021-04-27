@@ -48,7 +48,7 @@ public:
   uint256
   GetMtxBareTxid () const
   {
-    return CTransaction (mtx).GetBareTxid ();
+    return CTransaction (mtx).GetBareTxid2 ();
   }
 
 };
@@ -58,56 +58,56 @@ BOOST_FIXTURE_TEST_SUITE (BareTxid_tests, BareTxidTestFixture)
 BOOST_AUTO_TEST_CASE (commitsToTxVersion)
 {
   mtx.nVersion = 42;
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToLockTime)
 {
   mtx.nLockTime = 100;
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToInputs)
 {
   mtx.vin.emplace_back ();
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToInputPrevout)
 {
   mtx.vin[0].prevout.n = 42;
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToInputSequence)
 {
   mtx.vin[0].nSequence = 123;
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToOutputs)
 {
   mtx.vout.emplace_back ();
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToOutputValue)
 {
   mtx.vout[0].nValue = 20 * COIN;
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (commitsToOutputScript)
 {
   mtx.vout[1].scriptPubKey = CScript () << OP_META << HashToVec ("other data");
-  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () != tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (doesNotCommitToInputSignature)
 {
   mtx.vin[0].scriptSig.clear ();
   mtx.vin[1].scriptSig = CScript () << OP_META << HashToVec ("foo");
-  BOOST_CHECK (GetMtxBareTxid () == tx.GetBareTxid ());
+  BOOST_CHECK (GetMtxBareTxid () == tx.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_CASE (equalsTxidForCoinbase)
@@ -121,8 +121,8 @@ BOOST_AUTO_TEST_CASE (equalsTxidForCoinbase)
   mtx.vin[0].scriptSig.clear ();
   const CTransaction tx2(mtx);
 
-  BOOST_CHECK (tx1.GetBareTxid () == tx1.GetHash ());
-  BOOST_CHECK (tx1.GetBareTxid () != tx2.GetBareTxid ());
+  BOOST_CHECK (tx1.GetBareTxid2 () == tx1.GetHash2 ());
+  BOOST_CHECK (tx1.GetBareTxid2 () != tx2.GetBareTxid2 ());
 }
 
 BOOST_AUTO_TEST_SUITE_END ()

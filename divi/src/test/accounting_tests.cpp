@@ -66,7 +66,7 @@ CWalletTx* writeWalletEntry(CWallet* wallet,CWalletTx& wtx, int64_t timestamp)
     static unsigned walletTxIndex = 0;
     wtx.mapValue["comment"] = std::string("receving-tx:")+std::to_string(walletTxIndex++);
     wallet->AddToWallet(wtx);
-    CWalletTx* walletTx = const_cast<CWalletTx*>(wallet->GetWalletTx(wtx.GetHash()));
+    CWalletTx* walletTx = const_cast<CWalletTx*>(wallet->GetWalletTx(wtx.GetHash2()));
     walletTx->nTimeReceived = (unsigned int)timestamp;
     return walletTx;
 }

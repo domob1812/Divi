@@ -78,7 +78,7 @@ CMutableTransaction createDefaultTransaction(const CScript& defaultScript, unsig
 
 bool WriteTxToDisk(const CWallet* walletPtr, const CWalletTx& transactionToWrite)
 {
-  return CWalletDB(Settings::instance(), walletPtr->strWalletFile).WriteTx(transactionToWrite.GetHash(),transactionToWrite);
+  return CWalletDB(Settings::instance(), walletPtr->strWalletFile).WriteTx(transactionToWrite.GetHash2(),transactionToWrite);
 }
 
 } // anonymous namespace
@@ -122,7 +122,7 @@ const CWalletTx& FakeWallet::AddDefaultTx(const CScript& scriptToPayTo, unsigned
   const CMerkleTx merkleTx(tx, *fakeChain.activeChain, *fakeChain.blockIndexByHash);
   const CWalletTx wtx(merkleTx);
   AddToWallet(wtx);
-  const CWalletTx* txPtr = GetWalletTx(wtx.GetHash());
+  const CWalletTx* txPtr = GetWalletTx(wtx.GetHash2());
   assert(txPtr);
   return *txPtr;
 }
