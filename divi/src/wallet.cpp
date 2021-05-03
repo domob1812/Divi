@@ -232,7 +232,7 @@ void CWallet::UpdateTransactionMetadata(const std::vector<CWalletTx>& oldTransac
     LOCK(cs_wallet);
     for (const CWalletTx& wtxOld: oldTransactions)
     {
-        uint256 hash = wtxOld.GetHash();
+        uint256 hash = wtxOld.GetHash2();
         transactionRecord_->UpdateMetadata(hash,wtxOld,true,true);
     }
 }
@@ -717,7 +717,7 @@ bool CWallet::AddVault(
     CBlock block;
     ReadBlockFromDisk(block, blockIndexToBlockContainingTx);
     SyncTransaction(tx, &block);
-    auto wtx = GetWalletTx(tx.GetHash());
+    auto wtx = GetWalletTx(tx.GetHash2());
     return wtx != nullptr;
 }
 bool CWallet::RemoveVault(const CScript& vaultScript)
@@ -1130,7 +1130,7 @@ CWalletTx CWallet::initializeEmptyWalletTransaction() const
 
 bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 {
-    uint256 hash = wtxIn.GetHash();
+    uint256 hash = wtxIn.GetHash2();
 
     if (fFromLoadWallet)
     {
@@ -1223,7 +1223,7 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
 {
     {
         AssertLockHeld(cs_wallet);
-        bool fExisted = GetWalletTx(tx.GetHash()) != nullptr;
+        bool fExisted = GetWalletTx(tx.GetHash2()) != nullptr;
         if (fExisted && !fUpdate) return false;
         if (fExisted || IsMine(tx) || DebitsFunds(tx)) {
             CWalletTx wtx(tx);
@@ -1358,7 +1358,7 @@ void CWallet::ReacceptWalletTransactions()
     BOOST_FOREACH (PAIRTYPE(const uint256, CWalletTx) & item, transactionRecord_->mapWallet) {
         const uint256& wtxid = item.first;
         CWalletTx& wtx = item.second;
-        assert(wtx.GetHash() == wtxid);
+        assert(wtx.GetHash2() == wtxid);
 
         int nDepth = wtx.GetNumberOfBlockConfirmations();
 
@@ -1617,7 +1617,7 @@ bool CWallet::SatisfiesMinimumDepthRequirements(const CWalletTx* pcoin, int& nDe
 
     // We should not consider coins which aren't at least in our mempool
     // It's possible for these to be conflicted via ancestors which we may never be able to detect
-    if (nDepth == 0 && !mempool.exists(pcoin->GetHash()) )
+    if (nDepth == 0 && !mempool.exists(pcoin->GetHash2()) )
         return false;
 
     return true;

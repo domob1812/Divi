@@ -5,7 +5,7 @@
 extern Settings& settings;
 static bool WriteTxToDisk(const std::string& walletFilename, const CWalletTx& transactionToWrite)
 {
-    return CWalletDB(settings,walletFilename).WriteTx(transactionToWrite.GetHash(),transactionToWrite);
+    return CWalletDB(settings,walletFilename).WriteTx(transactionToWrite.GetHash2(),transactionToWrite);
 }
 
 WalletTransactionRecord::WalletTransactionRecord(

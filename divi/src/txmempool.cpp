@@ -421,7 +421,7 @@ bool CTxMemPool::addUnchecked(const uint256& hash, const CTxMemPoolEntry& entry,
         mapTx[hash] = entry;
         const auto* entryInMap = &mapTx[hash];
         const CTransaction& tx = entryInMap->GetTx();
-        mapBareTxid.emplace(tx.GetBareTxid(), entryInMap);
+        mapBareTxid.emplace(tx.GetBareTxid2(), entryInMap);
         for (unsigned int i = 0; i < tx.vin.size(); i++)
             mapNextTx[tx.vin[i].prevout] = CInPoint(&tx, i);
         nTransactionsUpdated++;
@@ -447,7 +447,7 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
     const CTransaction& tx = entry.GetTx();
     std::vector<CMempoolAddressDeltaKey> inserted;
 
-    uint256 txhash = tx.GetHash();
+    uint256 txhash = tx.GetHash2();
     for (unsigned int j = 0; j < tx.vin.size(); j++) {
         const CTxIn input = tx.vin[j];
         const CTxOut &prevout = view.GetOutputFor(input);
@@ -522,7 +522,7 @@ void CTxMemPool::addSpentIndex(const CTxMemPoolEntry &entry, const CCoinsViewCac
     const CTransaction& tx = entry.GetTx();
     std::vector<CSpentIndexKey> inserted;
 
-    uint256 txhash = tx.GetHash();
+    uint256 txhash = tx.GetHash2();
     for (unsigned int j = 0; j < tx.vin.size(); j++) {
         const CTxIn input = tx.vin[j];
         const CTxOut &prevout = view.GetOutputFor(input);
@@ -586,8 +586,8 @@ void CTxMemPool::remove(const CTransaction& origTx, std::list<CTransaction>& rem
     {
         LOCK(cs);
         std::deque<uint256> txToRemove;
-        txToRemove.push_back(origTx.GetHash());
-        if (fRecursive && !mapTx.count(origTx.GetHash())) {
+        txToRemove.push_back(origTx.GetHash2());
+        if (fRecursive && !mapTx.count(origTx.GetHash2())) {
             // If recursively removing but origTx isn't in the mempool
             // be sure to remove any children that are in the pool. This can
             // happen during chain re-orgs if origTx isn't re-accepted into
@@ -596,7 +596,7 @@ void CTxMemPool::remove(const CTransaction& origTx, std::list<CTransaction>& rem
                 std::map<COutPoint, CInPoint>::iterator it = mapNextTx.find(COutPoint(origTx.GetHash2(), i));
                 if (it == mapNextTx.end())
                     continue;
-                txToRemove.push_back(it->second.ptx->GetHash());
+                txToRemove.push_back(it->second.ptx->GetHash2());
             }
         }
         while (!txToRemove.empty()) {
@@ -614,10 +614,10 @@ void CTxMemPool::remove(const CTransaction& origTx, std::list<CTransaction>& rem
                     std::map<COutPoint, CInPoint>::iterator it = mapNextTx.find(COutPoint(hash, i));
                     if (it == mapNextTx.end())
                         continue;
-                    txToRemove.push_back(it->second.ptx->GetHash());
+                    txToRemove.push_back(it->second.ptx->GetHash2());
                 }
             }
-            mapBareTxid.erase(tx.GetBareTxid());
+            mapBareTxid.erase(tx.GetBareTxid2());
             for (const auto& txin : tx.vin)
                 mapNextTx.erase(txin.prevout);
 
@@ -678,7 +678,7 @@ void CTxMemPool::removeForBlock(const std::vector<CTransaction>& vtx, unsigned i
     LOCK(cs);
     std::vector<CTxMemPoolEntry> entries;
     BOOST_FOREACH (const CTransaction& tx, vtx) {
-        uint256 hash = tx.GetHash();
+        uint256 hash = tx.GetHash2();
         if (mapTx.count(hash))
             entries.push_back(mapTx[hash]);
     }
@@ -687,7 +687,7 @@ void CTxMemPool::removeForBlock(const std::vector<CTransaction>& vtx, unsigned i
         std::list<CTransaction> dummy;
         remove(tx, dummy, false);
         removeConflicts(tx, conflicts);
-        ClearPrioritisation(tx.GetHash());
+        ClearPrioritisation(tx.GetHash2());
     }
 }
 
@@ -763,7 +763,7 @@ void CTxMemPool::check(const CCoinsViewCache* pcoins) const
         }
     }
     for (const auto& entry : mapNextTx) {
-        const uint256 hash = entry.second.ptx->GetHash();
+        const uint256 hash = entry.second.ptx->GetHash2();
         const auto mit = mapTx.find(hash);
         assert(mit != mapTx.end());
         const CTransaction& tx = mit->second.GetTx();

@@ -125,7 +125,7 @@ void BlockMemoryPoolTransactionCollector::ComputeTransactionPriority (
     unsigned int nTxSize = ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
     dPriority = FeeAndPriorityCalculator::instance().ComputePriority(tx,dPriority, nTxSize);
 
-    uint256 hash = tx.GetHash();
+    uint256 hash = tx.GetHash2();
     mempool_.ApplyDeltas(hash, dPriority, nTotalIn);
 
     CFeeRate feeRate(nTotalIn - tx.GetValueOut(), nTxSize);
@@ -304,7 +304,7 @@ std::vector<PrioritizedTransactionData> BlockMemoryPoolTransactionCollector::Pri
         // Legacy limits on sigOps:
         unsigned int nTxSigOps = GetLegacySigOpCount(tx);
         // Skip free transactions if we're past the minimum block size:
-        const uint256& hash = tx.GetHash();
+        const uint256& hash = tx.GetHash2();
         if (nBlockSize + nTxSize >= blockMaxSize_ ||
             nBlockSigOps + nTxSigOps >= nMaxBlockSigOps||
             IsFreeTransaction(hash, fSortedByFee, feeRate, nBlockSize, nTxSize, tx))

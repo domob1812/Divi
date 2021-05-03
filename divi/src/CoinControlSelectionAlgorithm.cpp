@@ -20,7 +20,7 @@ std::set<COutput> CoinControlSelectionAlgorithm::SelectCoins(
         for(const COutput& out: vCoins)
         {
             if (!out.fSpendable ||
-                (!coinControl_->fAllowOtherInputs && !coinControl_->IsSelected(out.tx->GetHash(),out.i)))
+                (!coinControl_->fAllowOtherInputs && !coinControl_->IsSelected(out.tx->GetHash2(),out.i)))
             {
                 continue;
             }

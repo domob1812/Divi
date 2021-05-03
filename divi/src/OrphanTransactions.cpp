@@ -43,7 +43,7 @@ bool OrphanTransactionIsKnown(const uint256& hash)
 }
 bool AddOrphanTx(const CTransaction& tx, NodeId peer)
 {
-    uint256 hash = tx.GetHash();
+    uint256 hash = tx.GetHash2();
     if (OrphanTransactionIsKnown(hash))
         return false;
 
@@ -93,7 +93,7 @@ void EraseOrphansFor(NodeId peer)
     while (iter != mapOrphanTransactions.end()) {
         std::map<uint256, COrphanTx>::iterator maybeErase = iter++; // increment to avoid iterator becoming invalid
         if (maybeErase->second.fromPeer == peer) {
-            EraseOrphanTx(maybeErase->second.tx.GetHash());
+            EraseOrphanTx(maybeErase->second.tx.GetHash2());
             ++nErased;
         }
     }

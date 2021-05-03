@@ -508,7 +508,7 @@ bool CheckFeesPaidAreAcceptable(
     const CCoinsViewCache& view,
     CValidationState& state)
 {
-    const uint256 hash = tx.GetHash();
+    const uint256 hash = tx.GetHash2();
     CAmount minimumRelayFee = feeAndPriorityCalculator.getFeeRateQuote().GetFee(nSize);
     bool txShouldHavePriority = TxShouldBePrioritized(hash, nSize);
     if (fLimitFree && !txShouldHavePriority && nFees < minimumRelayFee)
@@ -557,7 +557,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                          error("%s : nonstandard transaction: %s",__func__, reason),
                          REJECT_NONSTANDARD, reason);
     // is it already in the memory pool?
-    uint256 hash = tx.GetHash();
+    uint256 hash = tx.GetHash2();
     if (pool.exists(hash)) {
         LogPrintf("%s tx already in mempool\n", __func__);
         return false;
@@ -1130,7 +1130,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // Watch for changes to the previous coinbase transaction.
     static uint256 hashPrevBestCoinBase;
     g_signals.UpdatedTransaction(hashPrevBestCoinBase);
-    hashPrevBestCoinBase = block.vtx[0].GetHash();
+    hashPrevBestCoinBase = block.vtx[0].GetHash2();
 
     return true;
 }

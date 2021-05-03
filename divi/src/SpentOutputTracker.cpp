@@ -93,7 +93,7 @@ void SpentOutputTracker::AddToSpends(const CWalletTx& tx)
     if (tx.IsCoinBase()) // Coinbases don't spend anything!
         return;
 
-    const auto hash = tx.GetHash();
+    const auto hash = tx.GetHash2();
     for(const CTxIn& txin: tx.vin)
         AddToSpends(txin.prevout, hash);
 }

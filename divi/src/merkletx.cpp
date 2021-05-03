@@ -111,7 +111,7 @@ int CMerkleTx::GetNumberOfBlockConfirmationsINTERNAL(const CBlockIndex*& pindexR
 
     // Make sure the merkle branch connects to this block
     if (!fMerkleVerified) {
-        if (CBlock::CheckMerkleBranch(GetHash(), vMerkleBranch, nIndex) != pindex->hashMerkleRoot)
+        if (CBlock::CheckMerkleBranch(GetHash2(), vMerkleBranch, nIndex) != pindex->hashMerkleRoot)
             return 0;
         fMerkleVerified = true;
     }
@@ -123,7 +123,7 @@ int CMerkleTx::GetNumberOfBlockConfirmationsINTERNAL(const CBlockIndex*& pindexR
 int CMerkleTx::GetNumberOfBlockConfirmations(const CBlockIndex*& pindexRet) const
 {
     int nResult = GetNumberOfBlockConfirmationsINTERNAL(pindexRet);
-    if (nResult == 0 && !mempool.exists(GetHash()))
+    if (nResult == 0 && !mempool.exists(GetHash2()))
         return -1; // Not in chain, not in mempool
 
     return nResult;
