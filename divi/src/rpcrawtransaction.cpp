@@ -73,9 +73,9 @@ void TxToJSONExpanded(const CTransaction& tx, const uint256 hashBlock, Object& e
                       int nHeight = 0, int nConfirmations = 0, int nBlockTime = 0)
 {
 
-    uint256 txid = tx.GetHash();
+    uint256 txid = tx.GetHash2();
     entry.push_back(Pair("txid", txid.GetHex()));
-    entry.push_back(Pair("baretxid", tx.GetBareTxid().GetHex()));
+    entry.push_back(Pair("baretxid", tx.GetBareTxid2().GetHex()));
     entry.push_back(Pair("version", tx.nVersion));
     entry.push_back(Pair("locktime", (int64_t)tx.nLockTime));
     Array vin;
@@ -153,8 +153,8 @@ void TxToJSONExpanded(const CTransaction& tx, const uint256 hashBlock, Object& e
 
 void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry)
 {
-    entry.push_back(Pair("txid", tx.GetHash().GetHex()));
-    entry.push_back(Pair("baretxid", tx.GetBareTxid().GetHex()));
+    entry.push_back(Pair("txid", tx.GetHash2().GetHex()));
+    entry.push_back(Pair("baretxid", tx.GetBareTxid2().GetHex()));
     entry.push_back(Pair("version", tx.nVersion));
     entry.push_back(Pair("locktime", (int64_t)tx.nLockTime));
     Array vin;
@@ -872,7 +872,7 @@ Value sendrawtransaction(const Array& params, bool fHelp)
     CTransaction tx;
     if (!DecodeHexTx(tx, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
-    uint256 hashTx = tx.GetHash();
+    uint256 hashTx = tx.GetHash2();
 
     bool fOverrideFees = false;
     if (params.size() > 1)

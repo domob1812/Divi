@@ -315,5 +315,5 @@ std::string CTransaction::ToString() const
 
 std::string CTransaction::ToStringShort() const
 {
-    return GetHash().ToString().substr(0, 10);
+    return GetHash2().ToString().substr(0, 10);
 }

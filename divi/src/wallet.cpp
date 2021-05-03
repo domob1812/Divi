@@ -1207,7 +1207,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet)
 
         if (!strCmd.empty())
         {
-            boost::replace_all(strCmd, "%s", wtxIn.GetHash().GetHex());
+            boost::replace_all(strCmd, "%s", wtxIn.GetHash2().GetHex());
             boost::thread t(runCommand, strCmd); // thread runs free
         }
     }

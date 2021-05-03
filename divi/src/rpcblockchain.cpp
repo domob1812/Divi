@@ -91,7 +91,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDe
             TxToJSON(tx, uint256(0), objTx);
             txs.push_back(objTx);
         } else
-            txs.push_back(tx.GetHash().GetHex());
+            txs.push_back(tx.GetHash2().GetHex());
     }
     result.push_back(Pair("tx", txs));
     result.push_back(Pair("time", block.GetBlockTime()));

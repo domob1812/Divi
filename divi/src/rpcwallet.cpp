@@ -70,9 +70,9 @@ void WalletTxToJSON(const CWalletTx& wtx, Object& entry)
         entry.push_back(Pair("blockindex", wtx.nIndex));
         entry.push_back(Pair("blocktime", mapBlockIndex[wtx.hashBlock]->GetBlockTime()));
     }
-    uint256 hash = wtx.GetHash();
+    uint256 hash = wtx.GetHash2();
     entry.push_back(Pair("txid", hash.GetHex()));
-    entry.push_back(Pair("baretxid", wtx.GetBareTxid().GetHex()));
+    entry.push_back(Pair("baretxid", wtx.GetBareTxid2().GetHex()));
     Array conflicts;
     if(pwalletMain)
     {
@@ -393,7 +393,7 @@ Value getcoinavailability(const Array& params, bool fHelp)
                 {
                     CTxOut txout = output.tx->vout[output.i];
                     valueByScript[txout.scriptPubKey] += txout.nValue;
-                    txdata[txout.scriptPubKey].insert(output.tx->GetHash().ToString());
+                    txdata[txout.scriptPubKey].insert(output.tx->GetHash2().ToString());
                     totalAmount += output.Value();
                 }
                 Array vaults;
@@ -517,7 +517,7 @@ Value fundvault(const Array& params, bool fHelp)
     SendMoney(vaultScript, nAmount, wtx);
 
     Object fundingAttemptResult;
-    fundingAttemptResult.push_back(Pair("txhash", wtx.GetHash().GetHex()));
+    fundingAttemptResult.push_back(Pair("txhash", wtx.GetHash2().GetHex()));
     fundingAttemptResult.push_back(Pair("vault",addressEncodings));
     return fundingAttemptResult;
 }
@@ -553,7 +553,7 @@ Value reclaimvaultfunds(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
     SendMoney(address.Get(), nAmount, wtx,true);
-    return wtx.GetHash().GetHex();
+    return wtx.GetHash2().GetHex();
 }
 
 Value removevault(const Array& params, bool fHelp)
@@ -709,7 +709,7 @@ Value sendtoaddress(const Array& params, bool fHelp)
 
     SendMoney(address.Get(), nAmount, wtx);
 
-    return wtx.GetHash().GetHex();
+    return wtx.GetHash2().GetHex();
 }
 
 Value listaddressgroupings(const Array& params, bool fHelp)
@@ -1119,7 +1119,7 @@ Value sendfrom(const Array& params, bool fHelp)
 
     SendMoney(address.Get(), nAmount, wtx);
 
-    return wtx.GetHash().GetHex();
+    return wtx.GetHash2().GetHex();
 }
 
 
@@ -1192,7 +1192,7 @@ Value sendmany(const Array& params, bool fHelp)
     if (!fCreated.second)
         throw JSONRPCError(RPC_WALLET_ERROR, fCreated.first);
 
-    return wtx.GetHash().GetHex();
+    return wtx.GetHash2().GetHex();
 }
 
 // Defined in rpcmisc.cpp
@@ -1299,7 +1299,7 @@ Value ListReceived(const Array& params, bool fByAccounts)
             item.nAmount += txout.nValue;
             item.nConf = min(item.nConf, nDepth);
             item.nBCConf = min(item.nBCConf, nBCDepth);
-            item.txids.push_back(wtx.GetHash());
+            item.txids.push_back(wtx.GetHash2());
             if (mine & ISMINE_WATCH_ONLY)
                 item.fIsWatchonly = true;
         }
