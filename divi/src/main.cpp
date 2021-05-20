@@ -3290,7 +3290,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             vRecv >> tx;
         }
 
-        CInv inv(MSG_TX, tx.GetHash());
+        CInv inv(MSG_TX, tx.GetHash2());
         pfrom->AddInventoryKnown(inv);
 
         bool fMissingInputs = false;
