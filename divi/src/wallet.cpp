@@ -164,7 +164,7 @@ bool FilterAvailableTypeByOwnershipType(const CKeyStore& keystore, const CScript
 
 bool WriteTxToDisk(const CWallet* walletPtr, const CWalletTx& transactionToWrite)
 {
-    return CWalletDB(settings, walletPtr->strWalletFile).WriteTx(transactionToWrite.GetHash(),transactionToWrite);
+    return CWalletDB(settings, walletPtr->strWalletFile).WriteTx(transactionToWrite.GetHash2(),transactionToWrite);
 }
 
 CWallet::CWallet(const CChain& chain, const BlockMap& blockMap
@@ -1957,7 +1957,7 @@ DBErrors CWallet::ReorderTransactionsByTimestamp()
             newIndicesOfPreviouslyUnorderedTransactions.push_back(transactionOrderIndex);
 
             if (pwtx) {
-                if (!walletdb.WriteTx(pwtx->GetHash(), *pwtx))
+                if (!walletdb.WriteTx(pwtx->GetHash2(), *pwtx))
                     return DB_LOAD_FAIL;
             } else if (!walletdb.WriteAccountingEntry(pacentry->nEntryNo, *pacentry))
                 return DB_LOAD_FAIL;
@@ -1975,7 +1975,7 @@ DBErrors CWallet::ReorderTransactionsByTimestamp()
 
             // Since we're changing the order, write it back
             if (pwtx) {
-                if (!walletdb.WriteTx(pwtx->GetHash(), *pwtx))
+                if (!walletdb.WriteTx(pwtx->GetHash2(), *pwtx))
                     return DB_LOAD_FAIL;
             } else if (!walletdb.WriteAccountingEntry(pacentry->nEntryNo, *pacentry))
                 return DB_LOAD_FAIL;

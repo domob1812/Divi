@@ -342,7 +342,7 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
             ssValue >> wtx;
             CValidationState state;
             // false because there is no reason to go through the zerocoin checks for our own wallet
-            if (wtx.GetHash() != hash)
+            if (wtx.GetHash2() != hash)
                 return false;
 
             // Undo serialize changes in 31600
