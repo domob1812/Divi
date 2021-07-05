@@ -13,6 +13,7 @@
 #include <pubkey.h>
 #include <uint256.h>
 #include <crypter.h>
+#include <primitives/transaction.h>
 #include <wallet_ismine.h>
 #include <walletdb.h>
 #include <ui_interface.h>
@@ -21,6 +22,7 @@
 #include <utilstrencodings.h>
 #include <tinyformat.h>
 #include <NotificationInterface.h>
+#include <masternode.h>
 #include <merkletx.h>
 #include <keypool.h>
 #include <reservekey.h>
@@ -33,7 +35,6 @@ class CKeyMetadata;
 class CKey;
 class CBlock;
 class CScript;
-class CTransaction;
 class CBlockIndex;
 struct StakableCoin;
 class WalletTransactionRecord;
@@ -44,13 +45,10 @@ class CChain;
 class CCoinControl;
 class COutput;
 class CReserveKey;
-class CScript;
 class CWalletTx;
 class CHDChain;
 class CTxMemPool;
 class CWalletDB;
-class COutPoint;
-class CTxIn;
 
 bool IsFinalTx(const CTransaction& tx, const CChain& activeChain, int nBlockHeight = 0 , int64_t nBlockTime = 0);
 
@@ -140,6 +138,10 @@ public:
     LockedCoinsSet setLockedCoins;
     int64_t nTimeFirstKey;
     std::map<CKeyID, CHDPubKey> mapHdPubKeys; //<! memory map of HD extended pubkeys
+
+    /** Pre-signed masternode broadcasts stored on this node's wallet.  */
+    std::map<COutPoint, CMasternodeBroadcast> mapMnBroadcasts;
+
 private:
     int64_t nNextResend;
     int64_t nLastResend;
@@ -250,6 +252,9 @@ public:
     bool LoadCScript(const CScript& redeemScript);
     bool AddVault(const CScript& vaultScript, const CBlockIndex* blockIndexToBlockContainingTx,const CTransaction& tx);
     bool RemoveVault(const CScript& vaultScript);
+
+    /** Imports a pre-signed masternode broadcast.  */
+    bool AddMnBroadcast(const CMasternodeBroadcast& mnb);
 
     //! Adds a destination data tuple to the store, and saves it to disk
     bool AddDestData(const CTxDestination& dest, const std::string& key, const std::string& value);

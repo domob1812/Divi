@@ -9,6 +9,7 @@
 
 #include "base58.h"
 #include "protocol.h"
+#include "masternode.h"
 #include "serialize.h"
 #include "sync.h"
 #include "util.h"
@@ -179,6 +180,14 @@ bool CWalletDB::EraseMultiSig(const CScript& dest)
 {
     walletDbUpdated_++;
     return Erase(std::make_pair(std::string("multisig"), dest));
+}
+
+bool CWalletDB::WriteMnBroadcast(const CMasternodeBroadcast& mnb)
+{
+    ++walletDbUpdated_;
+    /* Stored masternode broadcasts are recorded by the corresponding
+       masternode collateral, i.e. the masternode's vin outpoint.  */
+    return Write(std::make_pair(std::string("mnb"), mnb.vin.prevout), mnb);
 }
 
 bool CWalletDB::WriteBestBlock(const CBlockLocator& locator)
@@ -514,6 +523,10 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
                 strErr = "Error reading wallet database: LoadCScript failed";
                 return false;
             }
+        } else if (strType == "mnb") {
+            CMasternodeBroadcast mnb;
+            ssValue >> mnb;
+            pwallet->mapMnBroadcasts[mnb.vin.prevout] = mnb;
         } else if (strType == "orderposnext") {
             int64_t txIndex;
             ssValue >> txIndex;

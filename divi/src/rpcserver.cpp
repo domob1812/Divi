@@ -71,6 +71,8 @@ extern json_spirit::Value fundvault(const json_spirit::Array& params, bool fHelp
 extern json_spirit::Value reclaimvaultfunds(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value removevault(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value addvault(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value importmnbroadcast(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value listmnbroadcasts(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value signmessage(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getreceivedbyaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getreceivedbyaccount(const json_spirit::Array& params, bool fHelp);
@@ -548,6 +550,8 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "reclaimvaultfunds", &reclaimvaultfunds, false, false, true},
         {"wallet", "removevault", &removevault, false, false, true},
         {"wallet", "addvault", &addvault, false, false, true},
+        {"wallet", "importmnbroadcast", &importmnbroadcast, true, false, true},
+        {"wallet", "listmnbroadcasts", &listmnbroadcasts, true, false, true},
         {"wallet", "getcoinavailability", &getcoinavailability, false, false, true},
         {"wallet", "setaccount", &setaccount, true, false, true},
         {"wallet", "signmessage", &signmessage, true, false, true},
