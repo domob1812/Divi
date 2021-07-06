@@ -3,7 +3,6 @@
 #include <base58address.h>
 #include <MasternodeModule.h>
 #include <masternode.h>
-#include <keystore.h>
 #include <streams.h>
 #include <serialize.h>
 #include <spork.h>
@@ -18,6 +17,7 @@
 #include <timedata.h>
 #include <utilstrencodings.h>
 #include <MasternodeHelpers.h>
+#include <wallet.h>
 
 #define MN_WINNER_MINIMUM_AGE 8000    // Age in seconds. This should be > MASTERNODE_REMOVAL_SECONDS to avoid misconfigured new nodes in the list.
 template <typename T>
@@ -125,7 +125,7 @@ MasternodeStartResult RelayMasternodeBroadcast(const std::string& hexData, const
     return RelayParsedMasternodeBroadcast(mnb, updatePing);
 }
 
-MasternodeStartResult StartMasternode(const CKeyStore& keyStore, std::string alias, bool deferRelay)
+MasternodeStartResult StartMasternode(const CWallet& wallet, std::string alias, bool deferRelay)
 {
     const auto& mnModule = GetMasternodeModule();
     auto& mnodeman = mnModule.getMasternodeManager();
@@ -137,17 +137,37 @@ MasternodeStartResult StartMasternode(const CKeyStore& keyStore, std::string ali
             continue;
 
         CMasternodeBroadcast mnb;
+        bool updatePing = false;
 
         if(!CMasternodeBroadcastFactory::Create(
-                keyStore,
+                wallet,
                 configEntry,
                 result.errorMessage,
                 mnb,
                 false,
                 deferRelay))
         {
-            result.status = false;
-            return result;
+            /* We failed to sign a new broadcast with our wallet, but we may
+               have a stored one.  */
+
+            COutPoint outp;
+            if (!configEntry.parseInputReference(outp))
+            {
+                result.status = false;
+                result.errorMessage = "Failed to parse input reference";
+                return result;
+            }
+
+            const auto mit = wallet.mapMnBroadcasts.find(outp);
+            if (mit == wallet.mapMnBroadcasts.end())
+            {
+                result.status = false;
+                result.errorMessage = "No broadcast message available";
+                return result;
+            }
+
+            mnb = mit->second;
+            updatePing = true;
         }
 
         CDataStream serializedBroadcast(SER_NETWORK,PROTOCOL_VERSION);
@@ -159,7 +179,7 @@ MasternodeStartResult StartMasternode(const CKeyStore& keyStore, std::string ali
             return result;
         }
 
-        return RelayParsedMasternodeBroadcast (mnb, false);
+        return RelayParsedMasternodeBroadcast (mnb, updatePing);
     }
     result.status = false;
     result.errorMessage = "Invalid alias, couldn't find MN. Check your masternode.conf file";
