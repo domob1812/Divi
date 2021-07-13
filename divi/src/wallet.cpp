@@ -7,6 +7,8 @@
 
 #include "wallet.h"
 
+#include <primitives/transaction.h>
+
 #include "BlockDiskAccessor.h"
 #include "checkpoints.h"
 #include <chain.h>
@@ -725,14 +727,6 @@ bool CWallet::RemoveVault(const CScript& vaultScript)
     if (!fFileBacked)
         return true;
     return CWalletDB(settings,strWalletFile).EraseCScript(Hash160(vaultScript));
-}
-
-bool CWallet::AddMnBroadcast(const CMasternodeBroadcast& mnb)
-{
-    mapMnBroadcasts[mnb.vin.prevout] = mnb;
-    if (!fFileBacked)
-        return true;
-    return CWalletDB(settings, strWalletFile).WriteMnBroadcast(mnb);
 }
 
 

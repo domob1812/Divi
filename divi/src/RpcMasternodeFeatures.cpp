@@ -14,6 +14,7 @@
 #include <MasternodeNetworkMessageManager.h>
 #include <masternode-payments.h>
 #include <sync.h>
+#include <StoredMasternodeBroadcasts.h>
 #include <timedata.h>
 #include <utilstrencodings.h>
 #include <MasternodeHelpers.h>
@@ -125,7 +126,7 @@ MasternodeStartResult RelayMasternodeBroadcast(const std::string& hexData, const
     return RelayParsedMasternodeBroadcast(mnb, updatePing);
 }
 
-MasternodeStartResult StartMasternode(const CWallet& wallet, std::string alias, bool deferRelay)
+MasternodeStartResult StartMasternode(const CKeyStore& keyStore, const StoredMasternodeBroadcasts& stored, std::string alias, bool deferRelay)
 {
     const auto& mnModule = GetMasternodeModule();
     auto& mnodeman = mnModule.getMasternodeManager();
@@ -140,7 +141,7 @@ MasternodeStartResult StartMasternode(const CWallet& wallet, std::string alias, 
         bool updatePing = false;
 
         if(!CMasternodeBroadcastFactory::Create(
-                wallet,
+                keyStore,
                 configEntry,
                 result.errorMessage,
                 mnb,
@@ -158,15 +159,13 @@ MasternodeStartResult StartMasternode(const CWallet& wallet, std::string alias, 
                 return result;
             }
 
-            const auto mit = wallet.mapMnBroadcasts.find(outp);
-            if (mit == wallet.mapMnBroadcasts.end())
+            if (!stored.GetBroadcast(outp, mnb))
             {
                 result.status = false;
                 result.errorMessage = "No broadcast message available";
                 return result;
             }
 
-            mnb = mit->second;
             updatePing = true;
         }
 

@@ -71,8 +71,6 @@ extern json_spirit::Value fundvault(const json_spirit::Array& params, bool fHelp
 extern json_spirit::Value reclaimvaultfunds(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value removevault(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value addvault(const json_spirit::Array& params, bool fHelp);
-extern json_spirit::Value importmnbroadcast(const json_spirit::Array& params, bool fHelp);
-extern json_spirit::Value listmnbroadcasts(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value signmessage(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getreceivedbyaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getreceivedbyaccount(const json_spirit::Array& params, bool fHelp);
@@ -147,6 +145,8 @@ extern json_spirit::Value listmasternodeconf(const json_spirit::Array& params, b
 extern json_spirit::Value getmasternodestatus(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getmasternodewinners(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getmasternodescores(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value importmnbroadcast(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value listmnbroadcasts(const json_spirit::Array& params, bool fHelp);
 
 extern json_spirit::Value getinfo(const json_spirit::Array& params, bool fHelp); // in rpcmisc.cpp
 extern json_spirit::Value mnsync(const json_spirit::Array& params, bool fHelp);
@@ -478,6 +478,8 @@ static const CRPCCommand vRPCCommands[] =
         {"divi", "getmasternodestatus", &getmasternodestatus, true, true, false},
         {"divi", "getmasternodewinners", &getmasternodewinners, true, true, false},
         {"divi", "getmasternodescores", &getmasternodescores, true, true, false},
+        {"divi", "importmnbroadcast", &importmnbroadcast, true, false, false},
+        {"divi", "listmnbroadcasts", &listmnbroadcasts, true, false, false},
         //{"divi", "mnbudget", &mnbudget, true, true, false},
         //{"divi", "preparebudget", &preparebudget, true, true, false},
         //{"divi", "submitbudget", &submitbudget, true, true, false},
@@ -550,8 +552,6 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "reclaimvaultfunds", &reclaimvaultfunds, false, false, true},
         {"wallet", "removevault", &removevault, false, false, true},
         {"wallet", "addvault", &addvault, false, false, true},
-        {"wallet", "importmnbroadcast", &importmnbroadcast, true, false, true},
-        {"wallet", "listmnbroadcasts", &listmnbroadcasts, true, false, true},
         {"wallet", "getcoinavailability", &getcoinavailability, false, false, true},
         {"wallet", "setaccount", &setaccount, true, false, true},
         {"wallet", "signmessage", &signmessage, true, false, true},

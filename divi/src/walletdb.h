@@ -23,7 +23,6 @@ class CAccountingEntry;
 struct CBlockLocator;
 class CKeyPool;
 class CMasterKey;
-class CMasternodeBroadcast;
 class CScript;
 class CWallet;
 class CWalletTx;
@@ -110,8 +109,6 @@ public:
 
     bool WriteMultiSig(const CScript& script);
     bool EraseMultiSig(const CScript& script);
-
-    bool WriteMnBroadcast(const CMasternodeBroadcast& mnb);
 
     bool WriteBestBlock(const CBlockLocator& locator);
     bool ReadBestBlock(CBlockLocator& locator);
